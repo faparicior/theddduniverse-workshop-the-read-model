@@ -7,6 +7,7 @@ use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementId;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;
+use Demo\App\Common\Domain\EventPublisher;
 use Demo\App\Framework\Database\TransactionManager;
 use Exception;
 
@@ -16,6 +17,7 @@ final class ApproveAdvertisementUseCase
         private AdvertisementRepository      $advertisementRepository,
         private AdvertisementSecurityService $securityService,
         private TransactionManager           $transactionManager,
+        private EventPublisher               $eventPublisher,
     ) {}
 
     /**
@@ -28,7 +30,7 @@ final class ApproveAdvertisementUseCase
         try {
             $advertisement = $this->advertisementRepository->findByIdOrFail(new AdvertisementId($command->advertisementId));
 
-            $this->securityService->verifyAdminUserCanManageAdvertisement(
+            $this->securityService->assertAdminUserCanManageAdvertisement(
                 new UserId($command->securityUserId),
                 $advertisement,
             );
@@ -36,8 +38,9 @@ final class ApproveAdvertisementUseCase
             $advertisement->approve();
 
             $this->advertisementRepository->save($advertisement);
-            
             $this->transactionManager->commit();
+
+            $this->eventPublisher->publish(...$advertisement->pullEvents());
         } catch (Exception $exception) {
             $this->transactionManager->rollback();
             throw $exception;

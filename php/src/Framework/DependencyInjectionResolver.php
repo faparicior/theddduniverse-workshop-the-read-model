@@ -13,6 +13,7 @@ use Demo\App\Advertisements\Advertisement\Application\Command\UpdateAdvertisemen
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Persistence\SqliteAdvertisementRepository;
+use Demo\App\Advertisements\Advertisement\Infrastructure\Stream\Producer\AdvertisementEventsProducer;
 use Demo\App\Advertisements\Advertisement\UI\Http\ApproveAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\DeleteAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\DisableAdvertisementController;
@@ -28,6 +29,7 @@ use Demo\App\Advertisements\User\Infrastructure\Persistence\SqliteUserRepository
 use Demo\App\Advertisements\User\UI\Http\DisableMemberController;
 use Demo\App\Advertisements\User\UI\Http\EnableMemberController;
 use Demo\App\Advertisements\User\UI\Http\SignUpMemberController;
+use Demo\App\Common\Infrastructure\Stream\FileMessageBroker;
 use Demo\App\Framework\Database\DatabaseConnection;
 use Demo\App\Framework\Database\SqliteConnection;
 use Demo\App\Framework\Database\SqliteTransactionManager;
@@ -87,7 +89,7 @@ class DependencyInjectionResolver
 
     public function approveAdvertisementUseCase(): ApproveAdvertisementUseCase
     {
-        return new ApproveAdvertisementUseCase($this->advertisementRepository(), $this->securityService(), $this->transactionManager());
+        return new ApproveAdvertisementUseCase($this->advertisementRepository(), $this->securityService(), $this->transactionManager(), $this->advertisementEventProducer());
     }
 
     public function enableAdvertisementController(): EnableAdvertisementController
@@ -176,5 +178,18 @@ class DependencyInjectionResolver
     public function transactionManager(): TransactionManager
     {
         return new SqliteTransactionManager($this->connection());
+    }
+
+    private function advertisementEventProducer(): AdvertisementEventsProducer
+    {
+        return new AdvertisementEventsProducer(
+            $this->filenameMessageBroker(),
+            ThreadContext::getInstance(),
+        );
+    }
+
+    private function filenameMessageBroker(): FileMessageBroker
+    {
+        return new FileMessageBroker(__DIR__ . "/../stream/");
     }
 }

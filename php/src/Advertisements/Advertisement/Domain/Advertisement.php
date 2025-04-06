@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Domain;
 
+use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasApproved;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementApprovalStatus;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementDate;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementId;
@@ -15,6 +16,7 @@ use Demo\App\Advertisements\Shared\ValueObjects\UserId;
 
 final class Advertisement
 {
+    private array $events = [];
     private AdvertisementStatus $status;
     private AdvertisementApprovalStatus $approvalStatus;
 
@@ -108,5 +110,13 @@ final class Advertisement
     public function approve(): void
     {
         $this->approvalStatus = AdvertisementApprovalStatus::APPROVED;
+        $this->events[] = AdvertisementWasApproved::create($this);
+    }
+
+    public function pullEvents(): array
+    {
+        $events = $this->events;
+        $this->events = [];
+        return $events;
     }
 }
