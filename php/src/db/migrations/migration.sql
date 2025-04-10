@@ -22,3 +22,12 @@ create table main.users
     status TEXT
 );
 
+create table main.advertisements_stats
+(
+    civic_center_id TEXT not null constraint advertisements_stats_pk primary key,
+    advertisement_count INTEGER,
+    user_count INTEGER,
+    approved_count INTEGER,
+    disabled_count INTEGER,
+    pending_count INTEGER
+);

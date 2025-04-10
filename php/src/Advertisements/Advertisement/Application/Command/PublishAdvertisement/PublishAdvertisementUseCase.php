@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Application\Command\PublishAdvertisement;
 
+use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Advertisement;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Exceptions\AdvertisementAlreadyExistsException;
@@ -20,9 +21,10 @@ use Exception;
 final class PublishAdvertisementUseCase
 {
     public function __construct(
-        private AdvertisementRepository $advertisementRepository,
-        private UserRepository $userRepository,
-        private TransactionManager $transactionManager,
+        private AdvertisementRepository          $advertisementRepository,
+        private AdvertisementStatsViewRepository $advertisementStatsRepository,
+        private UserRepository                   $userRepository,
+        private TransactionManager               $transactionManager,
     ) {}
 
     /**
@@ -56,6 +58,10 @@ final class PublishAdvertisementUseCase
             );
 
             $this->advertisementRepository->save($advertisement);
+            $this->advertisementStatsRepository->incrementAdvertisements($advertisement->civicCenterId());
+            $this->advertisementStatsRepository->incrementPending($advertisement->civicCenterId());
+
+            $this->transactionManager->commit();
         } catch (Exception $exception) {
             $this->transactionManager->rollback();
             throw $exception;

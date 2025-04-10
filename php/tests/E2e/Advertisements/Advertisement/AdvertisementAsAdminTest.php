@@ -103,6 +103,12 @@ final class AdvertisementAsAdminTest extends TestCase
         $this->withMemberUser('enabled');
         $this->withAdminUser();
         $this->withAnAdvertisementCreated('disabled', 'pending_for_approval');
+        $this->withAdvertisementStats(
+            1,
+            0,
+            1,
+            0,
+        );
 
         $request = new FrameworkRequest(
             FrameworkRequest::METHOD_PUT,
@@ -130,11 +136,19 @@ final class AdvertisementAsAdminTest extends TestCase
             self::EVENTS_FIXTURES . 'advertisement-approved_1_0.json',
             self::PUBLISHED_EVENTS_PATH . 'pub.advertisement.events'
         );
+
+        $this->assertReadModelStatsHasRightContent(
+            1,
+            1,
+            0,
+            0,
+        );
     }
 
     private function emptyDatabase(): void
     {
         $this->connection->execute('delete from advertisements;');
+        $this->connection->execute('delete from advertisements_stats;');
         $this->connection->execute('delete from users;');
     }
 
@@ -239,5 +253,36 @@ final class AdvertisementAsAdminTest extends TestCase
         self::assertEquals($expectedContent['source'], $publishedContent['source']);
         self::assertEquals($expectedContent['aggregateType'], $publishedContent['aggregateType']);
         self::assertEquals($expectedContent['tenantId'], $publishedContent['tenantId']);
+    }
+
+    private function assertReadModelStatsHasRightContent(
+        ?int $expectedAdvertisementCount,
+        ?int $expectedApprovedCount,
+        ?int $expectedPendingCount,
+        ?int $expectedDisabledCount,
+    ): void
+    {
+        $resultSet = $this->connection->query("SELECT * FROM advertisements_stats WHERE civic_center_id = '" . self::CIVIC_CENTER_ID . "';");
+        self::assertEquals($expectedAdvertisementCount, $resultSet[0]['advertisement_count']);
+        self::assertEquals($expectedApprovedCount, $resultSet[0]['approved_count']);
+        self::assertEquals($expectedPendingCount, $resultSet[0]['pending_count']);
+        self::assertEquals($expectedDisabledCount, $resultSet[0]['disabled_count']);
+    }
+
+    private function withAdvertisementStats(
+        ?int $advertisementCount,
+        ?int $approvedCount,
+        ?int $pendingCount,
+        ?int $disabledCount,
+    ): void
+    {
+        $this->connection->execute(sprintf("INSERT INTO advertisements_stats (civic_center_id, advertisement_count, approved_count, pending_count, disabled_count) VALUES ('%s', %d, %d, %d, %d)",
+                self::CIVIC_CENTER_ID,
+                $advertisementCount,
+                $approvedCount,
+                $pendingCount,
+                $disabledCount,
+            )
+        );
     }
 }

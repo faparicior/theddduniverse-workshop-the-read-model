@@ -10,9 +10,11 @@ use Demo\App\Advertisements\Advertisement\Application\Command\EnableAdvertisemen
 use Demo\App\Advertisements\Advertisement\Application\Command\PublishAdvertisement\PublishAdvertisementUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Command\RenewAdvertisement\RenewAdvertisementUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Command\UpdateAdvertisement\UpdateAdvertisementUseCase;
+use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Persistence\SqliteAdvertisementRepository;
+use Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel\SqliteAdvertisementStatsViewRepository;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Stream\Producer\AdvertisementEventsProducer;
 use Demo\App\Advertisements\Advertisement\UI\Http\ApproveAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\DeleteAdvertisementController;
@@ -89,7 +91,7 @@ class DependencyInjectionResolver
 
     public function approveAdvertisementUseCase(): ApproveAdvertisementUseCase
     {
-        return new ApproveAdvertisementUseCase($this->advertisementRepository(), $this->securityService(), $this->transactionManager(), $this->advertisementEventProducer());
+        return new ApproveAdvertisementUseCase($this->advertisementRepository(), $this->advertisementStatsRepository(), $this->securityService(), $this->transactionManager(), $this->advertisementEventProducer());
     }
 
     public function enableAdvertisementController(): EnableAdvertisementController
@@ -104,7 +106,7 @@ class DependencyInjectionResolver
 
     public function publishAdvertisementUseCase(): PublishAdvertisementUseCase
     {
-        return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->userRepository(), $this->transactionManager());
+        return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->advertisementStatsRepository(), $this->userRepository(), $this->transactionManager());
     }
 
      public function renewAdvertisementUseCase(): RenewAdvertisementUseCase
@@ -120,6 +122,11 @@ class DependencyInjectionResolver
     public function advertisementRepository(): AdvertisementRepository
     {
         return new SqliteAdvertisementRepository($this->connection());
+    }
+
+    public function advertisementStatsRepository(): AdvertisementStatsViewRepository
+    {
+        return new SqliteAdvertisementStatsViewRepository($this->connection());
     }
 
     public function signUpMemberController(): SignUpMemberController
