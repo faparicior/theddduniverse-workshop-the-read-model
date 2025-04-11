@@ -23,6 +23,16 @@ final class Server
 
     public function get(FrameworkRequest $request): FrameworkResponse
     {
+        $match = match (1) {
+            preg_match('/^civic-center\/([0-9a-fA-F\-]+)\/stats$/', $request->path(), $matches) =>
+            $this->resolver->getAdvertisementStatsController()->request($request, ['civicCenterId' => $matches[1]]),
+            default => null,
+        };
+
+        if($match instanceof FrameworkResponse) {
+            return $match;
+        }
+
         return $this->notFound($request);
     }
 

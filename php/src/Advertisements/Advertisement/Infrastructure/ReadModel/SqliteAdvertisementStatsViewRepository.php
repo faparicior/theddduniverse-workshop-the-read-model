@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel;
 
+use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStats;
 use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
 use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Framework\Database\DatabaseConnection;
@@ -60,6 +61,31 @@ class SqliteAdvertisementStatsViewRepository implements AdvertisementStatsViewRe
             DO UPDATE SET advertisement_count = COALESCE(advertisement_count, 0) + 1',
                 $civicCenterId->value()
             )
+        );
+    }
+
+    public function getStats(CivicCenterId $civicCenterId): AdvertisementStats
+    {
+        $result = $this->dbConnection->query(sprintf('SELECT * FROM advertisements_stats WHERE civic_center_id = \'%s\'', $civicCenterId->value()));
+        if ($result) {
+            $result = $result[0];
+            return new AdvertisementStats(
+                $result['civic_center_id'],
+                (int)$result['advertisement_count'],
+                (int)$result['user_count'],
+                (int)$result['approved_count'],
+                (int)$result['disabled_count'],
+                (int)$result['pending_count'],
+            );
+        }
+
+        return new AdvertisementStats(
+            $civicCenterId->value(),
+            0,
+            0,
+            0,
+            0,
+            0,
         );
     }
 }
