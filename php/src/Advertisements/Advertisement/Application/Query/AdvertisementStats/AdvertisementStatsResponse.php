@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats;
 
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStats;
+use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsView;
 
 final readonly class AdvertisementStatsResponse
 {
-    public function __construct(public AdvertisementStats $advertisementStats)
+    public function __construct(public AdvertisementStatsView $advertisementStats)
     {}
 
     public function data(): array

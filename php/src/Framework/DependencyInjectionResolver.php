@@ -10,17 +10,21 @@ use Demo\App\Advertisements\Advertisement\Application\Command\EnableAdvertisemen
 use Demo\App\Advertisements\Advertisement\Application\Command\PublishAdvertisement\PublishAdvertisementUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Command\RenewAdvertisement\RenewAdvertisementUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Command\UpdateAdvertisement\UpdateAdvertisementUseCase;
+use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
 use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
+use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Persistence\SqliteAdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel\SqliteAdvertisementStatsViewRepository;
+use Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel\SqliteAdvertisementViewRepository;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Stream\Producer\AdvertisementEventsProducer;
 use Demo\App\Advertisements\Advertisement\UI\Http\ApproveAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\DeleteAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\DisableAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\EnableAdvertisementController;
+use Demo\App\Advertisements\Advertisement\UI\Http\GetActiveAdvertisementsController;
 use Demo\App\Advertisements\Advertisement\UI\Http\GetStatsAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\PublishAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\RenewAdvertisementController;
@@ -131,6 +135,11 @@ class DependencyInjectionResolver
         return new SqliteAdvertisementStatsViewRepository($this->connection());
     }
 
+    public function advertisementViewRepository(): AdvertisementViewRepository
+    {
+        return new SqliteAdvertisementViewRepository($this->connection());
+    }
+
     public function signUpMemberController(): SignUpMemberController
     {
         return new SignUpMemberController($this->signUpMemberUseCase(), $this->frameworkSecurityService());
@@ -161,10 +170,23 @@ class DependencyInjectionResolver
         return new AdvertisementsStatsUseCase($this->advertisementStatsRepository(), $this->securityService());
     }
 
+    public function getActiveAdvertisementStats(): ActiveAdvertisementsUseCase
+    {
+        return new ActiveAdvertisementsUseCase($this->advertisementViewRepository(), $this->securityService());
+    }
+
     public function getAdvertisementStatsController(): GetStatsAdvertisementController
     {
         return new GetStatsAdvertisementController(
             $this->getAdvertisementStats(),
+            $this->frameworkSecurityService(),
+        );
+    }
+
+    public function getActiveAdvertisementController(): GetActiveAdvertisementsController
+    {
+        return new GetActiveAdvertisementsController(
+            $this->getActiveAdvertisementStats(),
             $this->frameworkSecurityService(),
         );
     }

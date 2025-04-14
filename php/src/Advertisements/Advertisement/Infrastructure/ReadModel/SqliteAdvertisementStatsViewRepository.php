@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel;
 
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStats;
+use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsView;
 use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
 use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Framework\Database\DatabaseConnection;
@@ -64,12 +64,12 @@ class SqliteAdvertisementStatsViewRepository implements AdvertisementStatsViewRe
         );
     }
 
-    public function getStats(CivicCenterId $civicCenterId): AdvertisementStats
+    public function getStats(CivicCenterId $civicCenterId): AdvertisementStatsView
     {
         $result = $this->dbConnection->query(sprintf('SELECT * FROM advertisements_stats WHERE civic_center_id = \'%s\'', $civicCenterId->value()));
         if ($result) {
             $result = $result[0];
-            return new AdvertisementStats(
+            return new AdvertisementStatsView(
                 $result['civic_center_id'],
                 (int)$result['advertisement_count'],
                 (int)$result['user_count'],
@@ -79,7 +79,7 @@ class SqliteAdvertisementStatsViewRepository implements AdvertisementStatsViewRe
             );
         }
 
-        return new AdvertisementStats(
+        return new AdvertisementStatsView(
             $civicCenterId->value(),
             0,
             0,

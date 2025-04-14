@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Application\ReadModel;
 
-readonly final class AdvertisementStats
+readonly final class AdvertisementStatsView
 {
     public function __construct(
         public string $civicCenterId,

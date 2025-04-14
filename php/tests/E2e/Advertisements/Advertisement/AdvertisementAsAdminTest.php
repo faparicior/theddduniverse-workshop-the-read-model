@@ -145,7 +145,7 @@ final class AdvertisementAsAdminTest extends TestCase
         );
     }
 
-    public function testShouldAdvertisementStatsAsAdmin(): void
+    public function testShouldGetAdvertisementStatsAsAdmin(): void
     {
         $this->withAdminUser();
         $this->withAdvertisementStats(
@@ -179,6 +179,43 @@ final class AdvertisementAsAdminTest extends TestCase
                     'disabled' => 0,
                     'pending' => 1,
                 ]
+            ),
+            $response->data(),
+        );
+    }
+
+    public function testShouldGetActiveAdvertisementAsAdmin(): void
+    {
+        $this->withAdminUser();
+        $this->withAnAdvertisementCreated();
+
+        $request = new FrameworkRequest(
+            FrameworkRequest::METHOD_GET,
+            'civic-center/' . self::CIVIC_CENTER_ID . '/active-advertisements',
+            [
+                'password' => 'myPassword',
+            ],
+            [
+                'userSession' => self::ADMIN_ID,
+                'tenant-id' => self::BARCELONA_TENANT_ID,
+            ]
+        );
+        $response = $this->server->route($request);
+
+        self::assertEquals(FrameworkResponse::STATUS_OK, $response->statusCode());
+        self::assertEquals(
+            $this->successQueryResponse(
+                200,
+                [
+                    'advertisements' => [
+                        0 => [
+                            'id' => self::ADVERTISEMENT_ID,
+                            'description' => 'Dream advertisement ',
+                            'userEmail' => "email@test.com",
+                            'advertisementDate' => self::ADVERTISEMENT_CREATION_DATE,
+                        ],
+                    ],
+                ],
             ),
             $response->data(),
         );
