@@ -8,6 +8,7 @@ use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementId;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;
+use Demo\App\Common\Domain\EventBus;
 use Demo\App\Common\Domain\EventPublisher;
 use Demo\App\Framework\Database\TransactionManager;
 use Exception;
@@ -19,7 +20,7 @@ final class ApproveAdvertisementUseCase
         private AdvertisementStatsViewRepository $advertisementStatsRepository,
         private AdvertisementSecurityService     $securityService,
         private TransactionManager               $transactionManager,
-        private EventPublisher                   $eventPublisher,
+        private EventBus                         $eventBus,
     ) {}
 
     /**
@@ -45,7 +46,7 @@ final class ApproveAdvertisementUseCase
 
             $this->transactionManager->commit();
 
-            $this->eventPublisher->publish(...$advertisement->pullEvents());
+            $this->eventBus->publish(...$advertisement->pullEvents());
         } catch (Exception $exception) {
             $this->transactionManager->rollback();
             throw $exception;

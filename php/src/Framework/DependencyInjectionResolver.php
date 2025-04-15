@@ -15,6 +15,7 @@ use Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats\A
 use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
 use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
+use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasApproved;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Persistence\SqliteAdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel\SqliteAdvertisementStatsViewRepository;
@@ -37,6 +38,8 @@ use Demo\App\Advertisements\User\Infrastructure\Persistence\SqliteUserRepository
 use Demo\App\Advertisements\User\UI\Http\DisableMemberController;
 use Demo\App\Advertisements\User\UI\Http\EnableMemberController;
 use Demo\App\Advertisements\User\UI\Http\SignUpMemberController;
+use Demo\App\Common\Domain\EventBus;
+use Demo\App\Common\Infrastructure\EventBus\InMemoryEventBus;
 use Demo\App\Common\Infrastructure\Stream\FileMessageBroker;
 use Demo\App\Framework\Database\DatabaseConnection;
 use Demo\App\Framework\Database\SqliteConnection;
@@ -97,7 +100,7 @@ class DependencyInjectionResolver
 
     public function approveAdvertisementUseCase(): ApproveAdvertisementUseCase
     {
-        return new ApproveAdvertisementUseCase($this->advertisementRepository(), $this->advertisementStatsRepository(), $this->securityService(), $this->transactionManager(), $this->advertisementEventProducer());
+        return new ApproveAdvertisementUseCase($this->advertisementRepository(), $this->advertisementStatsRepository(), $this->securityService(), $this->transactionManager(), $this->eventBus());
     }
 
     public function enableAdvertisementController(): EnableAdvertisementController
@@ -217,6 +220,18 @@ class DependencyInjectionResolver
             $this->connection = new SqliteConnection();
         }
         return $this->connection;
+    }
+
+    private function eventBus(): EventBus
+    {
+        $eventBus = new InMemoryEventBus();
+        $eventBus->subscribe(
+            AdvertisementWasApproved::class,
+            $this->advertisementEventProducer(),
+            'publish',
+        );
+
+        return $eventBus;
     }
 
     public function transactionManager(): TransactionManager
