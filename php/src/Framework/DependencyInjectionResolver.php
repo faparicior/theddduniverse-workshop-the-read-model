@@ -108,7 +108,7 @@ class DependencyInjectionResolver
 
     public function publishAdvertisementUseCase(): PublishAdvertisementUseCase
     {
-        return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->userRepository(), $this->transactionManager());
+        return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->userRepository(), $this->transactionManager(), $this->advertisementEventProducer());
     }
 
     public function renewAdvertisementUseCase(): RenewAdvertisementUseCase

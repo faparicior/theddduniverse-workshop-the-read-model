@@ -16,6 +16,8 @@ final class AdvertisementArgon2PasswordUpdateFeatureTest extends TestCase
     private const string ADVERTISEMENT_CREATION_DATE = '2024-02-03 13:30:23';
     private const string CIVIC_CENTER_ID = '0d5a994b-1603-4c87-accc-581a59e4457c';
     private const string MEMBER_ID = 'e95a8999-cb23-4fa2-9923-e3015ef30411';
+    private const string BARCELONA_TENANT_ID = 'barcelona';
+
     private DependencyInjectionResolver $resolver;
     private Server $server;
     private DatabaseConnection $connection;
@@ -55,6 +57,7 @@ final class AdvertisementArgon2PasswordUpdateFeatureTest extends TestCase
             ],
             [
                 'userSession' => self::MEMBER_ID,
+                'tenant-id' => self::BARCELONA_TENANT_ID,
             ]
         );
 
