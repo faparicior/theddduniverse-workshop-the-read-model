@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Demo\App\Advertisements\Advertisement\Infrastructure\Stream\Producer;
 
 use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasApproved;
+use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasPublished;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Stream\Producer\Events\AdvertisementApprovedEvent;
+use Demo\App\Advertisements\Advertisement\Infrastructure\Stream\Producer\Events\AdvertisementPublishedEvent;
 use Demo\App\Common\Domain\DomainEvent;
 use Demo\App\Common\Domain\EventPublisher;
 use Demo\App\Common\Infrastructure\Stream\MessageBroker;
@@ -34,6 +36,7 @@ class AdvertisementEventsProducer implements EventPublisher
         try {
             match (true) {
                 $event instanceof AdvertisementWasApproved => $this->publishAdvertisementApproved($event),
+                $event instanceof AdvertisementWasPublished => $this->publishAdvertisementPublished($event),
                 default => null
             };
         } catch (\Exception $e) {
@@ -54,6 +57,18 @@ class AdvertisementEventsProducer implements EventPublisher
         $this->sendEventToMessageBroker($event);
     }
 
+    private function publishAdvertisementPublished(AdvertisementWasPublished $event)
+    {
+        $event = AdvertisementPublishedEvent::create(
+            $event,
+            self::SOURCE,
+            $this->threadContext->getValue("tenantId"),
+            $this->threadContext->getValue("correlationId") ?? UniqueIdGenerator::generate(),
+            $this->threadContext->getValue("causationId"),
+        );
+
+        $this->sendEventToMessageBroker($event);
+    }
     private function sendEventToMessageBroker(SerializableEvent $event): void
     {
         $this->messageBroker->publish($event, self::PUB_ADVERTISEMENT);

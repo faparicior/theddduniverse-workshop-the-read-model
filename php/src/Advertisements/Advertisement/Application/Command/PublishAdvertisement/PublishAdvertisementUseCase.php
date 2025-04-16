@@ -14,6 +14,7 @@ use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Advertisements\Shared\ValueObjects\Email;
 use Demo\App\Advertisements\Shared\ValueObjects\Password;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;
+use Demo\App\Common\Domain\EventPublisher;
 use Demo\App\Advertisements\User\Domain\UserRepository;
 use Demo\App\Framework\Database\TransactionManager;
 use Exception;
@@ -25,6 +26,7 @@ final class PublishAdvertisementUseCase
         private AdvertisementStatsViewRepository $advertisementStatsRepository,
         private UserRepository                   $userRepository,
         private TransactionManager               $transactionManager,
+        private EventPublisher                   $eventPublisher,
     ) {}
 
     /**
@@ -47,7 +49,7 @@ final class PublishAdvertisementUseCase
                 throw new Exception('Member has 3 active advertisements');
             }
 
-            $advertisement = new Advertisement(
+            $advertisement = Advertisement::publish(
                 new AdvertisementId($command->id),
                 new Description($command->description),
                 new Email($command->email),
@@ -62,6 +64,8 @@ final class PublishAdvertisementUseCase
             $this->advertisementStatsRepository->incrementPending($advertisement->civicCenterId());
 
             $this->transactionManager->commit();
+
+            $this->eventPublisher->publish(...$advertisement->pullEvents());
         } catch (Exception $exception) {
             $this->transactionManager->rollback();
             throw $exception;
