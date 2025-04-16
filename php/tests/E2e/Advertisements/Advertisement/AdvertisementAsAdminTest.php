@@ -281,7 +281,7 @@ final class AdvertisementAsAdminTest extends TestCase
         ];
     }
 
-    private function successQueryResponse(int $code = 200, array $data): array
+    private function successQueryResponse(int $code, array $data): array
     {
         return [
             'errors' => '',

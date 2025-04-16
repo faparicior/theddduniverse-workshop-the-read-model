@@ -14,6 +14,7 @@ use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements
 use Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
 use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
 use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementViewRepository;
+use Demo\App\Advertisements\Advertisement\Application\ReadModel\Projectors\AdvertisementStats;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasApproved;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
@@ -115,7 +116,7 @@ class DependencyInjectionResolver
 
     public function publishAdvertisementUseCase(): PublishAdvertisementUseCase
     {
-        return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->advertisementStatsRepository(), $this->userRepository(), $this->transactionManager());
+        return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->userRepository(), $this->transactionManager());
     }
 
      public function renewAdvertisementUseCase(): RenewAdvertisementUseCase
@@ -231,12 +232,25 @@ class DependencyInjectionResolver
             'publish',
         );
 
+        $eventBus->subscribe(
+            AdvertisementWasApproved::class,
+            $this->advertisementStatsProjector(),
+            'onAdvertisementApproved',
+        );
+
         return $eventBus;
     }
 
     public function transactionManager(): TransactionManager
     {
         return new SqliteTransactionManager($this->connection());
+    }
+
+    private function advertisementStatsProjector(): AdvertisementStats
+    {
+        return new AdvertisementStats(
+            $this->advertisementStatsRepository(),
+        );
     }
 
     private function advertisementEventProducer(): AdvertisementEventsProducer

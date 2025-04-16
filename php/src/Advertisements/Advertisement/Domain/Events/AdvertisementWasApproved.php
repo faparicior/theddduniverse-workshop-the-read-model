@@ -16,6 +16,7 @@ final readonly class AdvertisementWasApproved extends DomainEvent
         public string  $eventType,
         public string  $version,
         public string  $advertisementId,
+        public string  $civicCenterId,
     ) {
         parent::__construct($this->advertisementId, self::AGGREGATE_TYPE);
     }
@@ -26,6 +27,7 @@ final readonly class AdvertisementWasApproved extends DomainEvent
             self::EVENT_TYPE,
             self::VERSION,
             $advertisement->id()->value(),
+            $advertisement->civicCenterId()->value(),
         );
     }
 }

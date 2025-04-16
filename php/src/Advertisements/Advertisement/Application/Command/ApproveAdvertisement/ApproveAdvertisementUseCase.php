@@ -41,8 +41,6 @@ final class ApproveAdvertisementUseCase
             $advertisement->approve();
 
             $this->advertisementRepository->save($advertisement);
-            $this->advertisementStatsRepository->incrementApproval($advertisement->civicCenterId());
-            $this->advertisementStatsRepository->decrementPending($advertisement->civicCenterId());
 
             $this->transactionManager->commit();
 

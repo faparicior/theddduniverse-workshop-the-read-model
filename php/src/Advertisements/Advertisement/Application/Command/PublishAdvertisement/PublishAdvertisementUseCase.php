@@ -22,7 +22,6 @@ final class PublishAdvertisementUseCase
 {
     public function __construct(
         private AdvertisementRepository          $advertisementRepository,
-        private AdvertisementStatsViewRepository $advertisementStatsRepository,
         private UserRepository                   $userRepository,
         private TransactionManager               $transactionManager,
     ) {}
@@ -58,8 +57,6 @@ final class PublishAdvertisementUseCase
             );
 
             $this->advertisementRepository->save($advertisement);
-            $this->advertisementStatsRepository->incrementAdvertisements($advertisement->civicCenterId());
-            $this->advertisementStatsRepository->incrementPending($advertisement->civicCenterId());
 
             $this->transactionManager->commit();
         } catch (Exception $exception) {
