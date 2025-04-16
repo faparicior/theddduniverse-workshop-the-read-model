@@ -13,4 +13,8 @@ final readonly class AdvertisementDate
     {
         return $this->value;
     }
+    public function valueAsString(): string
+    {
+        return $this->value->format('Y-m-d H:i:s');
+    }
 }

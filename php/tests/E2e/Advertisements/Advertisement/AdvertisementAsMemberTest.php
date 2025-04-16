@@ -19,6 +19,9 @@ final class AdvertisementAsMemberTest extends TestCase
     private const string ADVERTISEMENT_CREATION_DATE = '2024-02-03 13:30:23';
     private const string INVALID_EMAIL = 'emailtest.com';
     private const string ADMIN_ID = '91b5fa8c-6212-4c0f-862f-4dc1cb0472c4';
+    private const string BARCELONA_TENANT_ID = 'barcelona';
+    private const string PUBLISHED_EVENTS_PATH = __DIR__ . '/../../../../src/stream/';
+    private const string EVENTS_FIXTURES = __DIR__ . '/../fixtures/events/';
 
     private DependencyInjectionResolver $resolver;
     private Server $server;
@@ -30,6 +33,7 @@ final class AdvertisementAsMemberTest extends TestCase
         $this->resolver = new DependencyInjectionResolver();
         $this->connection = $this->resolver->connection();
         $this->emptyDatabase();
+        $this->resetStream();
         $this->server = new Server($this->resolver);
         parent::setUp();
     }
@@ -62,6 +66,7 @@ final class AdvertisementAsMemberTest extends TestCase
             ],
             [
                 'userSession' => self::MEMBER_ID,
+                'tenant-id' => self::BARCELONA_TENANT_ID,
             ]
         );
 
@@ -74,6 +79,11 @@ final class AdvertisementAsMemberTest extends TestCase
 
         $resultSet = $this->connection->query('select * from advertisements;');
         self::assertEquals('Dream advertisement ', $resultSet[0][1]);
+
+        $this->assertEventIsPublished(
+            self::EVENTS_FIXTURES . 'advertisement-published_1_0.json',
+            self::PUBLISHED_EVENTS_PATH . 'pub.advertisement.events'
+        );
 
         $this->assertReadModelStatsHasRightContent(
             1,
@@ -341,6 +351,20 @@ final class AdvertisementAsMemberTest extends TestCase
         $this->connection->execute('delete from users;');
     }
 
+
+    private function assertEventIsPublished(string $expected, string $published): void
+    {
+        $expectedContent = json_decode(file_get_contents($expected), true);
+        $publishedContent = json_decode(file_get_contents($published), true);
+
+        self::assertEquals(array_keys($expectedContent), array_keys($publishedContent));
+        self::assertEquals($expectedContent['eventType'], $publishedContent['eventType']);
+        self::assertEquals($expectedContent['version'], $publishedContent['version']);
+        self::assertEquals($expectedContent['source'], $publishedContent['source']);
+        self::assertEquals($expectedContent['aggregateType'], $publishedContent['aggregateType']);
+        self::assertEquals($expectedContent['tenantId'], $publishedContent['tenantId']);
+    }
+
     private function withMemberUser(string $status): void
     {
         $this->connection->execute(sprintf("INSERT INTO users (id, email, password, role, member_number, civic_center_id, status) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
@@ -450,5 +474,15 @@ final class AdvertisementAsMemberTest extends TestCase
                 $disabledCount,
             )
         );
+    }
+
+    private function resetStream()
+    {
+        $files = glob(self::PUBLISHED_EVENTS_PATH . '*'); // get all file names
+        foreach ($files as $file) { // iterate files
+            if (is_file($file)) {
+                unlink($file); // delete file
+            }
+        }
     }
 }

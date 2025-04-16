@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Demo\App\Advertisements\Advertisement\Domain;
 
 use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasApproved;
+use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasPublished;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementApprovalStatus;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementDate;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementId;
@@ -31,6 +32,20 @@ final class Advertisement
     ){
         $this->status = AdvertisementStatus::ENABLED;
         $this->approvalStatus = AdvertisementApprovalStatus::PENDING_FOR_APPROVAL;
+    }
+
+    public static function publish(
+        AdvertisementId $id,
+        Description      $description,
+        Email            $email,
+        Password         $password,
+        AdvertisementDate $date,
+        CivicCenterId    $civicCenterId,
+        UserId           $memberId
+    ): self {
+        $advertisement =  new self($id, $description, $email, $password, $date, $civicCenterId, $memberId);
+        $advertisement->events[] = AdvertisementWasPublished::create($advertisement);
+        return $advertisement;
     }
 
     public function renew(Password $password): void

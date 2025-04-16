@@ -17,6 +17,7 @@ use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementVie
 use Demo\App\Advertisements\Advertisement\Application\ReadModel\Projectors\AdvertisementStats;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasApproved;
+use Demo\App\Advertisements\Advertisement\Domain\Events\AdvertisementWasPublished;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Persistence\SqliteAdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel\SqliteAdvertisementStatsViewRepository;
@@ -116,7 +117,7 @@ class DependencyInjectionResolver
 
     public function publishAdvertisementUseCase(): PublishAdvertisementUseCase
     {
-        return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->userRepository(), $this->transactionManager());
+        return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->userRepository(), $this->transactionManager(), $this->eventBus());
     }
 
      public function renewAdvertisementUseCase(): RenewAdvertisementUseCase
@@ -233,9 +234,21 @@ class DependencyInjectionResolver
         );
 
         $eventBus->subscribe(
+            AdvertisementWasPublished::class,
+            $this->advertisementEventProducer(),
+            'publish',
+        );
+
+        $eventBus->subscribe(
             AdvertisementWasApproved::class,
             $this->advertisementStatsProjector(),
             'onAdvertisementApproved',
+        );
+
+        $eventBus->subscribe(
+            AdvertisementWasPublished::class,
+            $this->advertisementStatsProjector(),
+            'onAdvertisementPublished',
         );
 
         return $eventBus;

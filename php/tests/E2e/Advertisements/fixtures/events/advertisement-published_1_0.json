@@ -1,0 +1,22 @@
+{
+  "id": "41fda1ca-9b8f-4adf-9920-3d7ae29568bb",
+  "schema": "https://demo.com/schemas/advertisement-published_1_0.json",
+  "eventType": "advertisement-published",
+  "version": "1.0",
+  "occurredOn": "2025-04-16T16:02:34+00:00",
+  "correlationId": "2fae6aa2-4862-4ec0-a0b4-fbb4a4b08dcc",
+  "causationId": null,
+  "source": "advertisement",
+  "aggregateId": "6fa00b21-2930-483e-b610-d6b0e5b19b29",
+  "aggregateType": "advertisement",
+  "tenantId": "barcelona",
+  "payload": {
+    "advertisementId": "6fa00b21-2930-483e-b610-d6b0e5b19b29",
+    "description": "Dream advertisement ",
+    "email": "email@test.com",
+    "password": "$argon2i$v=19$m=65536,t=4,p=1$YjdSNURJUXhWbG9qWTVVMQ$JM6QvK+o/Gsx08rWWxiAm0yBeLpzy/LNYipWpFmZjTY",
+    "date": "2025-04-16 16:02:34",
+    "civicCenterId": "0d5a994b-1603-4c87-accc-581a59e4457c",
+    "memberId": "e95a8999-cb23-4fa2-9923-e3015ef30411"
+  }
+}
