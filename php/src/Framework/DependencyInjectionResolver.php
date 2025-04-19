@@ -227,29 +227,7 @@ class DependencyInjectionResolver
     private function eventBus(): EventBus
     {
         $eventBus = new InMemoryEventBus();
-        $eventBus->subscribe(
-            AdvertisementWasApproved::class,
-            $this->advertisementEventProducer(),
-            'publish',
-        );
-
-        $eventBus->subscribe(
-            AdvertisementWasPublished::class,
-            $this->advertisementEventProducer(),
-            'publish',
-        );
-
-        $eventBus->subscribe(
-            AdvertisementWasApproved::class,
-            $this->advertisementStatsProjector(),
-            'onAdvertisementApproved',
-        );
-
-        $eventBus->subscribe(
-            AdvertisementWasPublished::class,
-            $this->advertisementStatsProjector(),
-            'onAdvertisementPublished',
-        );
+        $this->subscribeListeners($eventBus);
 
         return $eventBus;
     }
@@ -277,5 +255,32 @@ class DependencyInjectionResolver
     private function filenameMessageBroker(): FileMessageBroker
     {
         return new FileMessageBroker(__DIR__ . "/../stream/");
+    }
+
+    private function subscribeListeners(InMemoryEventBus $eventBus): void
+    {
+        $eventBus->subscribe(
+            AdvertisementWasApproved::class,
+            $this->advertisementEventProducer(),
+            'publish',
+        );
+
+        $eventBus->subscribe(
+            AdvertisementWasPublished::class,
+            $this->advertisementEventProducer(),
+            'publish',
+        );
+
+        $eventBus->subscribe(
+            AdvertisementWasApproved::class,
+            $this->advertisementStatsProjector(),
+            'onAdvertisementApproved',
+        );
+
+        $eventBus->subscribe(
+            AdvertisementWasPublished::class,
+            $this->advertisementStatsProjector(),
+            'onAdvertisementPublished',
+        );
     }
 }
