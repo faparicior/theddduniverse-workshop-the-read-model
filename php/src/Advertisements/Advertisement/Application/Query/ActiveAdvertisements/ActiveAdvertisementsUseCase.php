@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements;
 
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementViewRepository;
+use Demo\App\Advertisements\Advertisement\Domain\AdvertisementViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;

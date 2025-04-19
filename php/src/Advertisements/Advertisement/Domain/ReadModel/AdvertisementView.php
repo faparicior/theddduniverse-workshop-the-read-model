@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\Advertisement\Application\ReadModel;
+namespace Demo\App\Advertisements\Advertisement\Domain\ReadModel;
 
 final readonly class AdvertisementView
 {

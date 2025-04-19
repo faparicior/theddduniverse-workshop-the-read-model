@@ -3,13 +3,11 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Application\Command\ApproveAdvertisement;
 
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementId;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;
 use Demo\App\Common\Domain\EventBus;
-use Demo\App\Common\Domain\EventPublisher;
 use Demo\App\Framework\Database\TransactionManager;
 use Exception;
 
