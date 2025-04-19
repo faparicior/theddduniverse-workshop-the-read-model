@@ -17,7 +17,6 @@ final class ApproveAdvertisementUseCase
 {
     public function __construct(
         private AdvertisementRepository          $advertisementRepository,
-        private AdvertisementStatsViewRepository $advertisementStatsRepository,
         private AdvertisementSecurityService     $securityService,
         private TransactionManager               $transactionManager,
         private EventBus                         $eventBus,
