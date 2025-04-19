@@ -12,9 +12,9 @@ use Demo\App\Advertisements\Advertisement\Application\Command\RenewAdvertisement
 use Demo\App\Advertisements\Advertisement\Application\Command\UpdateAdvertisement\UpdateAdvertisementUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
+use Demo\App\Advertisements\Advertisement\Domain\AdvertisementStatsViewRepository;
+use Demo\App\Advertisements\Advertisement\Domain\AdvertisementViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Persistence\SqliteAdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel\SqliteAdvertisementStatsViewRepository;

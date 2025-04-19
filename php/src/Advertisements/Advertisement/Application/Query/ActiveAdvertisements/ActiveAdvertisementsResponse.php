@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements;
 
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementView;
+use Demo\App\Advertisements\Advertisement\Domain\ReadModel\AdvertisementView;
 
 final readonly class ActiveAdvertisementsResponse
 {

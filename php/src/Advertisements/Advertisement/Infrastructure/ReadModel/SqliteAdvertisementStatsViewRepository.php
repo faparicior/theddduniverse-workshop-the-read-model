@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel;
 
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsView;
-use Demo\App\Advertisements\Advertisement\Application\ReadModel\AdvertisementStatsViewRepository;
+use Demo\App\Advertisements\Advertisement\Domain\AdvertisementStatsViewRepository;
+use Demo\App\Advertisements\Advertisement\Domain\ReadModel\AdvertisementStatsView;
 use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Framework\Database\DatabaseConnection;
 use Demo\App\Framework\database\SqliteConnection;
