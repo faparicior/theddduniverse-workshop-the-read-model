@@ -19,7 +19,7 @@ class SqliteAdvertisementViewRepository implements AdvertisementViewRepository
     public function activeAdvertisementsByCivicCenter(CivicCenterId $civicCenterId): array
     {
         $query = sprintf(
-            "SELECT * FROM advertisements WHERE civic_center_id = '%s' AND status = 'enabled'",
+            "SELECT id, description, email, advertisement_date FROM advertisements WHERE civic_center_id = '%s' AND status = 'enabled'",
             $civicCenterId->value()
         );
 
