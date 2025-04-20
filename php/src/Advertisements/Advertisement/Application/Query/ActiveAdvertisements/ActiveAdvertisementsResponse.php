@@ -8,7 +8,7 @@ use Demo\App\Advertisements\Advertisement\Domain\ReadModel\AdvertisementView;
 
 final readonly class ActiveAdvertisementsResponse
 {
-    public function __construct(public array $activeAdvertisements)
+    public function __construct(private array $activeAdvertisements)
     {}
 
     public function data(): array
@@ -18,7 +18,7 @@ final readonly class ActiveAdvertisementsResponse
                 static fn(Advertisement $advertisement) => [
                     'id' => $advertisement->id()->value(),
                     'description' => $advertisement->description()->value(),
-                    'userEmail' => $advertisement->userEmail()->value(),
+                    'userEmail' => $advertisement->email()->value(),
                     'advertisementDate' => $advertisement->date()->value()->format('Y-m-d H:i:s'),
                 ],
                 $this->activeAdvertisements

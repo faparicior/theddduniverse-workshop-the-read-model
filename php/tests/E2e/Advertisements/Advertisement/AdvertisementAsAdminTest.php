@@ -132,10 +132,91 @@ final class AdvertisementAsAdminTest extends TestCase
         );
     }
 
+    public function testShouldGetAdvertisementStatsAsAdmin(): void
+    {
+        $this->withAdminUser();
+        $this->withAnAdvertisementCreated('disabled', 'pending_for_approval');
+
+        $request = new FrameworkRequest(
+            FrameworkRequest::METHOD_GET,
+            'civic-center/' . self::CIVIC_CENTER_ID . '/stats',
+            [
+                'password' => 'myPassword',
+            ],
+            [
+                'userSession' => self::ADMIN_ID,
+                'tenant-id' => self::BARCELONA_TENANT_ID,
+            ]
+        );
+        $response = $this->server->route($request);
+
+        self::assertEquals(FrameworkResponse::STATUS_OK, $response->statusCode());
+        self::assertEquals(
+            $this->successQueryResponse(
+                200,
+                [
+                    'advertisements' => 1,
+                    'users' => 0,
+                    'approved' => 0,
+                    'disabled' => 0,
+                    'pending' => 1,
+                ]
+            ),
+            $response->data(),
+        );
+    }
+
+    public function testShouldGetActiveAdvertisementAsAdmin(): void
+    {
+        $this->withAdminUser();
+        $this->withAnAdvertisementCreated();
+
+        $request = new FrameworkRequest(
+            FrameworkRequest::METHOD_GET,
+            'civic-center/' . self::CIVIC_CENTER_ID . '/active-advertisements',
+            [
+                'password' => 'myPassword',
+            ],
+            [
+                'userSession' => self::ADMIN_ID,
+                'tenant-id' => self::BARCELONA_TENANT_ID,
+            ]
+        );
+        $response = $this->server->route($request);
+
+        self::assertEquals(FrameworkResponse::STATUS_OK, $response->statusCode());
+        self::assertEquals(
+            $this->successQueryResponse(
+                200,
+                [
+                    'advertisements' => [
+                        0 => [
+                            'id' => self::ADVERTISEMENT_ID,
+                            'description' => 'Dream advertisement ',
+                            'userEmail' => "email@test.com",
+                            'advertisementDate' => self::ADVERTISEMENT_CREATION_DATE,
+                        ],
+                    ],
+                ],
+            ),
+            $response->data(),
+        );
+    }
+
     private function emptyDatabase(): void
     {
         $this->connection->execute('delete from advertisements;');
+        $this->connection->execute('delete from advertisements_stats;');
         $this->connection->execute('delete from users;');
+    }
+
+    private function successQueryResponse(int $code, array $data): array
+    {
+        return [
+            'errors' => '',
+            'code' => $code,
+            'message' => $data,
+        ];
     }
 
     private function withMemberUser(string $status): void

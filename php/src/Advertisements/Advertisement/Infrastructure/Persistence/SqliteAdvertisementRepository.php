@@ -69,7 +69,7 @@ class SqliteAdvertisementRepository implements AdvertisementRepository
     public function activeAdvertisementsByCivicCenter(CivicCenterId $civicCenterId): array
     {
         $result = $this->dbConnection->query(sprintf(
-            'SELECT * FROM advertisements WHERE civic_center_id = \'%s\' AND status = \'active\'',
+            'SELECT * FROM advertisements WHERE civic_center_id = \'%s\' AND status = \'enabled\'',
             $civicCenterId->value())
         );
         if (!$result) {
