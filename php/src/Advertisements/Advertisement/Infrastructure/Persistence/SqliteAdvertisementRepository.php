@@ -66,6 +66,50 @@ class SqliteAdvertisementRepository implements AdvertisementRepository
         return $advertisement;
     }
 
+    public function activeAdvertisementsByCivicCenter(CivicCenterId $civicCenterId): array
+    {
+        $result = $this->dbConnection->query(sprintf(
+            'SELECT * FROM advertisements WHERE civic_center_id = \'%s\' AND status = \'active\'',
+            $civicCenterId->value())
+        );
+        if (!$result) {
+            return [];
+        }
+
+        return array_map(
+            static fn(array $row) => new Advertisement(
+                new AdvertisementId($row['id']),
+                new Description($row['description']),
+                new Email($row['email']),
+                Password::fromEncryptedPassword($row['password']),
+                new AdvertisementDate(new \DateTime($row['advertisement_date'])),
+                new CivicCenterId($row['civic_center_id']),
+                new UserId($row['user_id']),
+            ),
+            $result
+        );
+    }
+
+    public function getStats(CivicCenterId $civicCenterId): array
+    {
+        $result = $this->dbConnection->query(sprintf(
+            'SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN status = \'enabled\' THEN 1 ELSE 0 END) as approved,
+                SUM(CASE WHEN status = \'pending\' THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status = \'disabled\' THEN 1 ELSE 0 END) as pending
+                FROM advertisements WHERE civic_center_id = \'%s\'',
+            $civicCenterId->value())
+        );
+
+        return [
+            'total' => (int)$result[0]['total'],
+            'approved' => (int)$result[0]['approved'],
+            'pending' => (int)$result[0]['pending'],
+            'disabled' => (int)$result[0]['disabled'],
+        ];
+    }
+
     public function findByIdOrNull(AdvertisementId $id): ?Advertisement
     {
         $result = $this->dbConnection->query(sprintf('SELECT * FROM advertisements WHERE id = \'%s\'', $id->value()));

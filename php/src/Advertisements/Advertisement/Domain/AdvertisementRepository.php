@@ -6,6 +6,7 @@ namespace Demo\App\Advertisements\Advertisement\Domain;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\ActiveAdvertisements;
 use Demo\App\Advertisements\Advertisement\Domain\ValueObjects\AdvertisementId;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Persistence\SqliteAdvertisementRepository;
+use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;
 use Demo\App\Advertisements\User\Domain\MemberUser;
 
@@ -14,6 +15,12 @@ interface AdvertisementRepository
     public function save(Advertisement $advertisement): void;
 
     public function findByIdOrFail(AdvertisementId $id): Advertisement;
+
+    /**
+     * @return Advertisement[]
+     */
+    public function activeAdvertisementsByCivicCenter(CivicCenterId $civicCenterId): array;
+    public function getStats(CivicCenterId $civicCenterId): array;
 
     public function findByIdOrNull(AdvertisementId $id): ?Advertisement;
 
