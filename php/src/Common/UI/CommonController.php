@@ -38,6 +38,18 @@ abstract class CommonController
         );
     }
 
+    protected function processSuccessfulQuery(array $message): FrameworkResponse
+    {
+        return new FrameworkResponse(
+            FrameworkResponse::STATUS_OK,
+            [
+                'errors' => '',
+                'code' => FrameworkResponse::STATUS_OK,
+                'message' => $message,
+            ]
+        );
+    }
+
     protected function processSuccessfulCommand(): FrameworkResponse
     {
         return new FrameworkResponse(
