@@ -10,6 +10,8 @@ use Demo\App\Advertisements\Advertisement\Application\Command\EnableAdvertisemen
 use Demo\App\Advertisements\Advertisement\Application\Command\PublishAdvertisement\PublishAdvertisementUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Command\RenewAdvertisement\RenewAdvertisementUseCase;
 use Demo\App\Advertisements\Advertisement\Application\Command\UpdateAdvertisement\UpdateAdvertisementUseCase;
+use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsUseCase;
+use Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
 use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Advertisement\Infrastructure\Persistence\SqliteAdvertisementRepository;
@@ -159,6 +161,17 @@ class DependencyInjectionResolver
             $this->frameworkSecurityService(),
         );
     }
+
+    public function getAdvertisementStats(): AdvertisementsStatsUseCase
+    {
+        return new AdvertisementsStatsUseCase($this->advertisementRepository(), $this->securityService());
+    }
+
+    public function getActiveAdvertisementStats(): ActiveAdvertisementsUseCase
+    {
+        return new ActiveAdvertisementsUseCase($this->advertisementRepository(), $this->securityService());
+    }
+
     public function enableMemberUseCase(): EnableMemberUseCase
     {
         return new EnableMemberUseCase($this->userRepository());
