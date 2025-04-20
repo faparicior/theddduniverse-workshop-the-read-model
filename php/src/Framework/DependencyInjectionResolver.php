@@ -18,6 +18,8 @@ use Demo\App\Advertisements\Advertisement\UI\Http\ApproveAdvertisementController
 use Demo\App\Advertisements\Advertisement\UI\Http\DeleteAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\DisableAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\EnableAdvertisementController;
+use Demo\App\Advertisements\Advertisement\UI\Http\GetActiveAdvertisementsController;
+use Demo\App\Advertisements\Advertisement\UI\Http\GetStatsAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\PublishAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\RenewAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\UpdateAdvertisementController;
@@ -107,10 +109,10 @@ class DependencyInjectionResolver
         return new PublishAdvertisementUseCase($this->advertisementRepository(), $this->userRepository(), $this->transactionManager());
     }
 
-     public function renewAdvertisementUseCase(): RenewAdvertisementUseCase
-     {
-         return new RenewAdvertisementUseCase($this->advertisementRepository());
-     }
+    public function renewAdvertisementUseCase(): RenewAdvertisementUseCase
+    {
+     return new RenewAdvertisementUseCase($this->advertisementRepository());
+    }
 
     public function updateAdvertisementUseCase(): UpdateAdvertisementUseCase
     {
@@ -142,6 +144,21 @@ class DependencyInjectionResolver
         return new EnableMemberController($this->enableMemberUseCase(), $this->frameworkSecurityService());
     }
 
+    public function getAdvertisementStatsController(): GetStatsAdvertisementController
+    {
+        return new GetStatsAdvertisementController(
+            $this->getAdvertisementStats(),
+            $this->frameworkSecurityService(),
+        );
+    }
+
+    public function getActiveAdvertisementController(): GetActiveAdvertisementsController
+    {
+        return new GetActiveAdvertisementsController(
+            $this->getActiveAdvertisementStats(),
+            $this->frameworkSecurityService(),
+        );
+    }
     public function enableMemberUseCase(): EnableMemberUseCase
     {
         return new EnableMemberUseCase($this->userRepository());
