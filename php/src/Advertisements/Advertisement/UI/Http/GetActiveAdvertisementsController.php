@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Demo\App\Advertisements\AdvertisementStats\UI;
 
-use Demo\App\Advertisements\AdvertisementStats\Application\Query\ActiveAdvertisements\ActiveAdvertisementsQuery;
-use Demo\App\Advertisements\AdvertisementStats\Application\Query\ActiveAdvertisements\ActiveAdvertisementsUseCase;
+use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsQuery;
+use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsUseCase;
 use Demo\App\Common\Exceptions\BoundedContextException;
 use Demo\App\Common\UI\CommonController;
 use Demo\App\Framework\FrameworkRequest;

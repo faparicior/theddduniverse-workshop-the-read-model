@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\AdvertisementStats\Application\Infrastructure\ReadModel;
+namespace Demo\App\Advertisements\Advertisement\Infrastructure\ReadModel;
 
 use Demo\App\Advertisements\AdvertisementStats\Domain\AdvertisementViewRepository;
 use Demo\App\Advertisements\AdvertisementStats\Domain\ReadModel\AdvertisementView;

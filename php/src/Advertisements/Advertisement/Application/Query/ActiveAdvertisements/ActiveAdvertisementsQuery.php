@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\AdvertisementStats\Application\Query\ActiveAdvertisements;
+namespace Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements;
 
 final readonly class ActiveAdvertisementsQuery
 {
