@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\Advertisement\UI\Http;
+namespace Demo\App\Advertisements\AdvertisementStats\UI;
 
-use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsQuery;
-use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsUseCase;
+use Demo\App\Advertisements\AdvertisementStats\Application\Query\AdvertisementStats\AdvertisementsStatsQuery;
+use Demo\App\Advertisements\AdvertisementStats\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
 use Demo\App\Common\Exceptions\BoundedContextException;
 use Demo\App\Common\UI\CommonController;
 use Demo\App\Framework\FrameworkRequest;
@@ -12,10 +12,10 @@ use Demo\App\Framework\FrameworkResponse;
 use Demo\App\Framework\SecurityUser\FrameworkSecurityService;
 use Demo\App\Framework\ThreadContext;
 
-final class GetActiveAdvertisementsController extends CommonController
+final class GetStatsAdvertisementController extends CommonController
 {
     public function __construct(
-        private ActiveAdvertisementsUseCase $useCase,
+        private AdvertisementsStatsUseCase $useCase,
         private FrameworkSecurityService $securityService,
     ) {}
 
@@ -30,7 +30,7 @@ final class GetActiveAdvertisementsController extends CommonController
                 return $this->processUnauthorizedResponse();
             }
 
-            $query = new ActiveAdvertisementsQuery(
+            $query = new AdvertisementsStatsQuery(
                 $user->id(),
                 $user->role(),
                 $pathValues['civicCenterId'],

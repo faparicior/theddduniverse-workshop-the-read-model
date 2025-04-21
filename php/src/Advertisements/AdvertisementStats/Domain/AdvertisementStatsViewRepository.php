@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\Advertisement\Domain;
+namespace Demo\App\Advertisements\AdvertisementStats\Domain;
 
-use Demo\App\Advertisements\Advertisement\Domain\ReadModel\AdvertisementStatsView;
+use Demo\App\Advertisements\AdvertisementStats\Domain\ReadModel\AdvertisementStatsView;
 use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 
 interface AdvertisementStatsViewRepository

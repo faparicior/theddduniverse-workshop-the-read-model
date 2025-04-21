@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements;
+namespace Demo\App\Advertisements\AdvertisementStats\Application\Query\AdvertisementStats;
 
-final readonly class ActiveAdvertisementsQuery
+final readonly class AdvertisementsStatsQuery
 {
     public function __construct(
         public string $securityUserId,

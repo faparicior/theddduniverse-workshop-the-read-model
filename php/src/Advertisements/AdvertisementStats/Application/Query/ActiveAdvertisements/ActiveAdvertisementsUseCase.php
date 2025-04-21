@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements;
+namespace Demo\App\Advertisements\AdvertisementStats\Application\Query\ActiveAdvertisements;
 
-use Demo\App\Advertisements\Advertisement\Domain\AdvertisementViewRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
+use Demo\App\Advertisements\AdvertisementStats\Domain\AdvertisementViewRepository;
 use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;
 
