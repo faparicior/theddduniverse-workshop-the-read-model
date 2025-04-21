@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats;
+namespace Demo\App\Advertisements\AdvertisementStats\Application\Query\AdvertisementStats;
 
-use Demo\App\Advertisements\Advertisement\Domain\ReadModel\AdvertisementStatsView;
+use Demo\App\Advertisements\AdvertisementStats\Domain\ReadModel\AdvertisementStatsView;
 
 final readonly class AdvertisementStatsResponse
 {

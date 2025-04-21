@@ -1,12 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\Advertisement\UI\Http;
+namespace Demo\App\Advertisements\AdvertisementStats\UI\Http;
 
-use Demo\App\Advertisements\Advertisement\Application\Command\ApproveAdvertisement\ApproveAdvertisementCommand;
-use Demo\App\Advertisements\Advertisement\Application\Command\ApproveAdvertisement\ApproveAdvertisementUseCase;
-use Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats\AdvertisementsStatsQuery;
-use Demo\App\Advertisements\Advertisement\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
+use Demo\App\Advertisements\AdvertisementStats\Application\Query\AdvertisementStats\AdvertisementsStatsQuery;
+use Demo\App\Advertisements\AdvertisementStats\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
 use Demo\App\Common\Exceptions\BoundedContextException;
 use Demo\App\Common\UI\CommonController;
 use Demo\App\Framework\FrameworkRequest;
