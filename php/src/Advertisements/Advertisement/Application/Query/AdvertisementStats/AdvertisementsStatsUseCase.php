@@ -7,11 +7,13 @@ use Demo\App\Advertisements\Advertisement\Domain\AdvertisementRepository;
 use Demo\App\Advertisements\Advertisement\Domain\Services\AdvertisementSecurityService;
 use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;
+use Demo\App\Advertisements\User\Domain\UserRepository;
 
 final class AdvertisementsStatsUseCase
 {
     public function __construct(
         private AdvertisementRepository      $advertisementRepository,
+        private UserRepository               $userRepository,
         private AdvertisementSecurityService $securityService,
     ) {
     }
@@ -23,12 +25,14 @@ final class AdvertisementsStatsUseCase
             new CivicCenterId($query->civicCenterId),
         );
 
-        // TODO: Get user stats
-
-        $result = $this->advertisementRepository->getStats(
+        $usersCount = $this->userRepository->usersCountByCivicCenter(
             new CivicCenterId($query->civicCenterId)
         );
 
-        return new AdvertisementStatsResponse($result);
+        $stats = $this->advertisementRepository->getStats(
+            new CivicCenterId($query->civicCenterId)
+        );
+
+        return new AdvertisementStatsResponse($stats, $usersCount);
     }
 }

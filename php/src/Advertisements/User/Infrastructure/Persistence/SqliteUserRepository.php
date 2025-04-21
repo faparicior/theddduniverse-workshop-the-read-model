@@ -137,6 +137,16 @@ class SqliteUserRepository implements UserRepository
         return null;
     }
 
+    public function usersCountByCivicCenter(CivicCenterId $civicCenterId): int
+    {
+        $result = $this->dbConnection->query(sprintf('SELECT COUNT(*) as total FROM users WHERE civic_center_id = \'%s\'', $civicCenterId->value()));
+        if (!$result) {
+            return 0;
+        }
+
+        return (int)$result[0]['total'];
+    }
+
     public function saveMember(MemberUser $member): void
     {
         if ($this->isASignUp($member)) {

@@ -156,7 +156,7 @@ final class AdvertisementAsAdminTest extends TestCase
                 200,
                 [
                     'advertisements' => 1,
-                    'users' => 0,
+                    'users' => 1,
                     'approved' => 0,
                     'disabled' => 0,
                     'pending' => 1,

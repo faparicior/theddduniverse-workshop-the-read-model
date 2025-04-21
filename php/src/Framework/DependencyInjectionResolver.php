@@ -164,7 +164,7 @@ class DependencyInjectionResolver
 
     public function getAdvertisementStats(): AdvertisementsStatsUseCase
     {
-        return new AdvertisementsStatsUseCase($this->advertisementRepository(), $this->securityService());
+        return new AdvertisementsStatsUseCase($this->advertisementRepository(), $this->userRepository(), $this->securityService());
     }
 
     public function getActiveAdvertisementStats(): ActiveAdvertisementsUseCase
