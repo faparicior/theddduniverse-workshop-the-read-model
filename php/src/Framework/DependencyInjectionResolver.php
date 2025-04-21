@@ -23,18 +23,19 @@ use Demo\App\Advertisements\Advertisement\UI\Http\ApproveAdvertisementController
 use Demo\App\Advertisements\Advertisement\UI\Http\DeleteAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\DisableAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\EnableAdvertisementController;
+use Demo\App\Advertisements\Advertisement\UI\Http\GetActiveAdvertisementsController;
 use Demo\App\Advertisements\Advertisement\UI\Http\PublishAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\RenewAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\UpdateAdvertisementController;
 use Demo\App\Advertisements\AdvertisementStats\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
 use Demo\App\Advertisements\AdvertisementStats\Domain\AdvertisementStatsViewRepository;
-use Demo\App\Advertisements\AdvertisementStats\Domain\ReadModel\Projectors\AdvertisementStats;
+use Demo\App\Advertisements\AdvertisementStats\Infrastructure\ReadModel\Projectors\AdvertisementStats;
 use Demo\App\Advertisements\AdvertisementStats\Infrastructure\ReadModel\SqliteAdvertisementStatsViewRepository;
-use Demo\App\Advertisements\AdvertisementStats\UI\GetActiveAdvertisementsController;
-use Demo\App\Advertisements\AdvertisementStats\UI\GetStatsAdvertisementController;
+use Demo\App\Advertisements\AdvertisementStats\UI\Http\GetStatsAdvertisementController;
 use Demo\App\Advertisements\User\Application\Command\DisableMember\DisableMemberUseCase;
 use Demo\App\Advertisements\User\Application\Command\EnableMember\EnableMemberUseCase;
 use Demo\App\Advertisements\User\Application\Command\SignUpMember\SignUpMemberUseCase;
+use Demo\App\Advertisements\User\Domain\Events\MemberUserWasSignedUp;
 use Demo\App\Advertisements\User\Domain\UserRepository;
 use Demo\App\Advertisements\User\Infrastructure\Persistence\SqliteUserRepository;
 use Demo\App\Advertisements\User\UI\Http\DisableMemberController;
@@ -208,7 +209,7 @@ class DependencyInjectionResolver
 
     public function signUpMemberUseCase(): SignUpMemberUseCase
     {
-        return new SignUpMemberUseCase($this->userRepository(), $this->advertisementStatsRepository(), $this->transactionManager());
+        return new SignUpMemberUseCase($this->userRepository(), $this->advertisementStatsRepository(), $this->transactionManager(), $this->eventBus());
     }
 
     public function userRepository(): UserRepository
@@ -281,6 +282,12 @@ class DependencyInjectionResolver
             AdvertisementWasPublished::class,
             $this->advertisementStatsProjector(),
             'onAdvertisementPublished',
+        );
+
+        $eventBus->subscribe(
+            MemberUserWasSignedUp::class,
+            $this->advertisementStatsProjector(),
+            'onMemberUserWasSignedUp',
         );
     }
 }

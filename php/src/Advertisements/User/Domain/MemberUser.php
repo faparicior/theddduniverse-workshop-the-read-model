@@ -7,6 +7,7 @@ use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Advertisements\Shared\ValueObjects\Email;
 use Demo\App\Advertisements\Shared\ValueObjects\Password;
 use Demo\App\Advertisements\Shared\ValueObjects\UserId;
+use Demo\App\Advertisements\User\Domain\Events\MemberUserWasSignedUp;
 use Demo\App\Advertisements\User\Domain\Exceptions\InvalidUserException;
 use Demo\App\Advertisements\User\Domain\ValueObjects\MemberNumber;
 use Demo\App\Advertisements\User\Domain\ValueObjects\Role;
@@ -38,6 +39,7 @@ class MemberUser extends UserBase
         $member = new self($id, $email, $role, $memberNumber, $civicCenterId, UserStatus::ENABLED);
         $member->password = $password;
 
+        $member->events[] = MemberUserWasSignedUp::create($member);
         return $member;
     }
 

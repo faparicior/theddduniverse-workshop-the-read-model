@@ -32,6 +32,12 @@ final class MemberTest extends TestCase
     public function testShouldSignUpAMemberThroughAnAdmin(): void
     {
         $this->withAdminUser();
+        $this->withAdvertisementStats(
+            1,
+            0,
+            1,
+            0,
+        );
 
         $request = new FrameworkRequest(
             FrameworkRequest::METHOD_POST,
@@ -57,6 +63,13 @@ final class MemberTest extends TestCase
 
         $resultSet = $this->connection->query('select * from users where id = \'' . self::MEMBER_ID . '\';');
         self::assertCount(1, $resultSet);
+
+        $this->assertReadModelStatsHasRightContent(
+            1,
+            1,
+            0,
+            0,
+        );
     }
 
     public function testShouldDisableAMemberThroughAnAdmin(): void
@@ -167,8 +180,17 @@ final class MemberTest extends TestCase
         );
     }
 
+    private function assertReadModelStatsHasRightContent(
+        ?int $expectedUserCount,
+    ): void
+    {
+        $resultSet = $this->connection->query("SELECT user_count FROM advertisements_stats WHERE civic_center_id = '" . self::CIVIC_CENTER_ID . "';");
+        self::assertEquals($expectedUserCount, $resultSet[0]['user_count']);
+    }
+
     private function emptyDatabase(): void
     {
+        $this->connection->execute('delete from advertisements_stats;');
         $this->connection->execute('delete from users;');
     }
 
@@ -228,6 +250,23 @@ final class MemberTest extends TestCase
                 '123456',
                 self::CIVIC_CENTER_2_ID,
                 'enabled',
+            )
+        );
+    }
+
+    private function withAdvertisementStats(
+        ?int $advertisementCount,
+        ?int $approvedCount,
+        ?int $pendingCount,
+        ?int $disabledCount,
+    ): void
+    {
+        $this->connection->execute(sprintf("INSERT INTO advertisements_stats (civic_center_id, advertisement_count, approved_count, pending_count, disabled_count) VALUES ('%s', %d, %d, %d, %d)",
+                self::CIVIC_CENTER_ID,
+                $advertisementCount,
+                $approvedCount,
+                $pendingCount,
+                $disabledCount,
             )
         );
     }

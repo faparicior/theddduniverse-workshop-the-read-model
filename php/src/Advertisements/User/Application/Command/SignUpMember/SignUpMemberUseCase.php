@@ -15,6 +15,7 @@ use Demo\App\Advertisements\User\Domain\MemberUser;
 use Demo\App\Advertisements\User\Domain\UserRepository;
 use Demo\App\Advertisements\User\Domain\ValueObjects\MemberNumber;
 use Demo\App\Advertisements\User\Domain\ValueObjects\Role;
+use Demo\App\Common\Domain\EventBus;
 use Demo\App\Framework\Database\TransactionManager;
 use Exception;
 
@@ -24,6 +25,7 @@ final class SignUpMemberUseCase
         private UserRepository                   $userRepository,
         private AdvertisementStatsViewRepository $advertisementStatsViewRepository,
         private TransactionManager               $transactionManager,
+        private EventBus                         $eventBus,
     ){}
 
     /**
@@ -57,9 +59,9 @@ final class SignUpMemberUseCase
             );
 
             $this->userRepository->saveMember($member);
-            $this->advertisementStatsViewRepository->incrementUser($member->civicCenterId());
-
             $this->transactionManager->commit();
+
+            $this->eventBus->publish(...$member->pullEvents());
         } catch (Exception $exception) {
             $this->transactionManager->rollback();
             throw $exception;

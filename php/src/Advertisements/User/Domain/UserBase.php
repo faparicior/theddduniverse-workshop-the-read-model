@@ -11,6 +11,8 @@ use Demo\App\Advertisements\User\Domain\ValueObjects\UserStatus;
 
 abstract class UserBase
 {
+    protected array $events = [];
+
     protected ?Password $password = null;
 
     protected function __construct(
@@ -44,5 +46,12 @@ abstract class UserBase
     public function status(): UserStatus
     {
         return $this->status;
+    }
+
+    public function pullEvents(): array
+    {
+        $events = $this->events;
+        $this->events = [];
+        return $events;
     }
 }

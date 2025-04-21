@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\App\Advertisements\AdvertisementStats\UI;
+namespace Demo\App\Advertisements\Advertisement\UI\Http;
 
 use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsQuery;
 use Demo\App\Advertisements\Advertisement\Application\Query\ActiveAdvertisements\ActiveAdvertisementsUseCase;
