@@ -64,6 +64,30 @@ class SqliteAdvertisementStatsViewRepository implements AdvertisementStatsViewRe
         );
     }
 
+    public function incrementUser(CivicCenterId $civicCenterId): void
+    {
+        $this->dbConnection->execute(sprintf('
+            INSERT INTO advertisements_stats (civic_center_id, user_count) 
+            VALUES (\'%1$s\', 1) 
+            ON CONFLICT(civic_center_id) 
+            DO UPDATE SET user_count = COALESCE(user_count, 0) + 1',
+                $civicCenterId->value()
+            )
+        );
+    }
+
+    public function decrementUser(CivicCenterId $civicCenterId): void
+    {
+        $this->dbConnection->execute(sprintf('
+            INSERT INTO advertisements_stats (civic_center_id, user_count) 
+            VALUES (\'%1$s\', -1) 
+            ON CONFLICT(civic_center_id) 
+            DO UPDATE SET user_count = COALESCE(user_count, 0) - 1',
+                $civicCenterId->value()
+            )
+        );
+    }
+
     public function getStats(CivicCenterId $civicCenterId): AdvertisementStatsView
     {
         $result = $this->dbConnection->query(sprintf('SELECT * FROM advertisements_stats WHERE civic_center_id = \'%s\'', $civicCenterId->value()));
