@@ -208,7 +208,7 @@ class DependencyInjectionResolver
 
     public function signUpMemberUseCase(): SignUpMemberUseCase
     {
-        return new SignUpMemberUseCase($this->userRepository());
+        return new SignUpMemberUseCase($this->userRepository(), $this->advertisementStatsRepository(), $this->transactionManager());
     }
 
     public function userRepository(): UserRepository

@@ -12,5 +12,7 @@ interface AdvertisementStatsViewRepository
     public function incrementPending(CivicCenterId $civicCenterId): void;
     public function decrementPending(CivicCenterId $civicCenterId): void;
     public function incrementAdvertisements(CivicCenterId $civicCenterId): void;
+    public function incrementUser(CivicCenterId $civicCenterId): void;
+    public function decrementUser(CivicCenterId $civicCenterId): void;
     public function getStats(CivicCenterId $civicCenterId): AdvertisementStatsView;
 }
