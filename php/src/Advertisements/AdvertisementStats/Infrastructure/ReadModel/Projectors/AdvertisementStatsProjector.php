@@ -8,7 +8,7 @@ use Demo\App\Advertisements\AdvertisementStats\Domain\AdvertisementStatsViewRepo
 use Demo\App\Advertisements\Shared\ValueObjects\CivicCenterId;
 use Demo\App\Common\Domain\DomainEvent;
 
-class AdvertisementStats
+class AdvertisementStatsProjector
 {
     public function __construct(
         private AdvertisementStatsViewRepository $advertisementStatsRepository,

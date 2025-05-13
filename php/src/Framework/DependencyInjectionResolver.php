@@ -29,7 +29,7 @@ use Demo\App\Advertisements\Advertisement\UI\Http\RenewAdvertisementController;
 use Demo\App\Advertisements\Advertisement\UI\Http\UpdateAdvertisementController;
 use Demo\App\Advertisements\AdvertisementStats\Application\Query\AdvertisementStats\AdvertisementsStatsUseCase;
 use Demo\App\Advertisements\AdvertisementStats\Domain\AdvertisementStatsViewRepository;
-use Demo\App\Advertisements\AdvertisementStats\Infrastructure\ReadModel\Projectors\AdvertisementStats;
+use Demo\App\Advertisements\AdvertisementStats\Infrastructure\ReadModel\Projectors\AdvertisementStatsProjector;
 use Demo\App\Advertisements\AdvertisementStats\Infrastructure\ReadModel\SqliteAdvertisementStatsViewRepository;
 use Demo\App\Advertisements\AdvertisementStats\UI\Http\GetStatsAdvertisementController;
 use Demo\App\Advertisements\User\Application\Command\DisableMember\DisableMemberUseCase;
@@ -238,9 +238,9 @@ class DependencyInjectionResolver
         return new SqliteTransactionManager($this->connection());
     }
 
-    private function advertisementStatsProjector(): AdvertisementStats
+    private function advertisementStatsProjector(): AdvertisementStatsProjector
     {
-        return new AdvertisementStats(
+        return new AdvertisementStatsProjector(
             $this->advertisementStatsRepository(),
         );
     }
